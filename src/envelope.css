@@ -1,0 +1,788 @@
+/* ==========================================================================
+   A CARTA MÁGICA 3D - ENVELOPE INTERATIVO CINEMATOGRÁFICO
+   O Carteiro Secreto • Experiência Mobile-First sem bugs visuais
+   ========================================================================== */
+
+:root {
+  /* Cores temáticas por cenário */
+  --envelope-aniversario-grad: linear-gradient(145deg, #e11d48 0%, #be123c 50%, #9f1239 100%);
+  --envelope-aniversario-pocket: linear-gradient(180deg, #f43f5e 0%, #e11d48 100%);
+  --envelope-aniversario-flap: linear-gradient(180deg, #ff4d6d 0%, #e11d48 100%);
+  --seal-aniversario-bg: radial-gradient(circle at 35% 35%, #fbbf24 0%, #d97706 65%, #92400e 100%);
+  --seal-aniversario-glow: rgba(245, 158, 11, 0.45);
+
+  --envelope-amor-grad: linear-gradient(145deg, #f43f5e 0%, #e11d48 50%, #881337 100%);
+  --envelope-amor-pocket: linear-gradient(180deg, #fb7185 0%, #f43f5e 100%);
+  --envelope-amor-flap: linear-gradient(180deg, #fda4af 0%, #f43f5e 100%);
+  --seal-amor-bg: radial-gradient(circle at 35% 35%, #f43f5e 0%, #be123c 65%, #881337 100%);
+  --seal-amor-glow: rgba(244, 63, 94, 0.45);
+
+  --envelope-desculpa-grad: linear-gradient(145deg, #6366f1 0%, #4f46e5 50%, #3730a3 100%);
+  --envelope-desculpa-pocket: linear-gradient(180deg, #818cf8 0%, #6366f1 100%);
+  --envelope-desculpa-flap: linear-gradient(180deg, #a5b4fc 0%, #6366f1 100%);
+  --seal-desculpa-bg: radial-gradient(circle at 35% 35%, #818cf8 0%, #4f46e5 65%, #312e81 100%);
+  --seal-desculpa-glow: rgba(99, 102, 241, 0.45);
+
+  --envelope-gratidao-grad: linear-gradient(145deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+  --envelope-gratidao-pocket: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+  --envelope-gratidao-flap: linear-gradient(180deg, #fcd34d 0%, #f59e0b 100%);
+  --seal-gratidao-bg: radial-gradient(circle at 35% 35%, #fcd34d 0%, #d97706 65%, #78350f 100%);
+  --seal-gratidao-glow: rgba(245, 158, 11, 0.45);
+
+  /* Dimensões do envelope */
+  --envelope-w: min(88vw, 360px);
+  --envelope-h: 230px;
+}
+
+/* ==========================================================================
+   SEÇÃO & CARD WRAPPER (Prevenção de overflow e blocos cortados)
+   ========================================================================== */
+.envelope-showcase-section {
+  position: relative;
+  overflow-x: hidden;
+  isolation: isolate;
+  padding: 60px 0;
+  background: linear-gradient(180deg, rgba(255, 241, 242, 0.6) 0%, rgba(250, 245, 255, 0.6) 100%);
+}
+
+.envelope-experience-card {
+  position: relative;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 24px 16px 32px 16px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-card);
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Faixa decorativa superior alinhada */
+.envelope-experience-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
+/* ==========================================================================
+   SELETOR DE CENÁRIOS & DEMO PERSONALIZADA
+   ========================================================================== */
+.scenario-selector-bar {
+  margin-bottom: 16px;
+}
+
+.scenario-selector-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.scenario-pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.scenario-pill {
+  border: 1.5px solid var(--border-subtle);
+  background: #f8fafc;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+}
+
+.scenario-pill:hover {
+  background: #fff;
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.scenario-pill.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 2px 10px rgba(225, 29, 72, 0.15);
+  font-weight: 800;
+}
+
+.scenario-pill-custom {
+  background: #fdf4ff;
+  border-color: #f0abfc;
+  color: #a21caf;
+}
+
+.scenario-pill-custom.active,
+.scenario-pill-custom:hover {
+  background: #fae8ff;
+  border-color: #d946ef;
+  color: #86198f;
+}
+
+/* Caixa expansível para digitação personalizada na demo */
+.custom-demo-text-box {
+  background: #fdf2f8;
+  border: 1.5px dashed #f43f5e;
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin: 12px auto 16px auto;
+  max-width: 600px;
+  text-align: left;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.custom-demo-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #9f1239;
+  margin-bottom: 8px;
+}
+
+.textarea-demo {
+  min-height: 90px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+
+.custom-demo-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  gap: 12px;
+}
+
+#demo-char-counter {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #9f1239;
+}
+
+/* ==========================================================================
+   AVISO AMARELO DE INSTRUÇÃO COM TRANSIÇÃO SUAVE
+   ========================================================================== */
+.envelope-instruction-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  line-height: 1.4;
+  border: 1px solid #fde68a;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 90%;
+}
+
+.envelope-instruction-badge.is-opened {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: #a7f3d0;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12);
+}
+
+/* ==========================================================================
+   PALCO 3D (ENVELOPE STAGE)
+   ========================================================================== */
+.envelope-stage {
+  perspective: 1200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 380px;
+  margin: 10px 0 16px 0;
+  transition: min-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Quando o envelope abre, o palco ganha respiro para a carta expandida */
+.envelope-stage.stage-open {
+  min-height: 480px;
+}
+
+@media (min-width: 640px) {
+  .envelope-stage {
+    min-height: 400px;
+  }
+  .envelope-stage.stage-open {
+    min-height: 520px;
+  }
+}
+
+/* ==========================================================================
+   CORPO PRINCIPAL DO ENVELOPE (WRAPPER)
+   ========================================================================== */
+.envelope-wrapper {
+  position: relative;
+  width: var(--envelope-w);
+  height: var(--envelope-h);
+  margin: 0 auto;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.34, 1.25, 0.64, 1);
+}
+
+/* Fundo rígido do envelope */
+.envelope-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.16);
+  z-index: 1;
+  background: var(--envelope-aniversario-grad);
+  transition: background 0.4s ease;
+}
+
+/* Temas dinâmicos do fundo */
+.envelope-wrapper.theme-aniversario .envelope-back {
+  background: var(--envelope-aniversario-grad);
+}
+.envelope-wrapper.theme-amor .envelope-back {
+  background: var(--envelope-amor-grad);
+}
+.envelope-wrapper.theme-desculpa .envelope-back {
+  background: var(--envelope-desculpa-grad);
+}
+.envelope-wrapper.theme-gratidao .envelope-back {
+  background: var(--envelope-gratidao-grad);
+}
+
+/* ==========================================================================
+   BOLSO FRONTAL DO ENVELOPE (POCKET) - Cobre 100% da carta fechada
+   ========================================================================== */
+.envelope-pocket {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  border-radius: 0 0 16px 16px;
+  overflow: hidden;
+}
+
+/* Aba inferior que forma a frente do envelope */
+.envelope-pocket::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  /* Geometria perfeita de bolso: dobra em V inferior com laterais fechadas */
+  clip-path: polygon(0% 100%, 0% 0%, 50% 52%, 100% 0%, 100% 100%);
+  background: var(--envelope-aniversario-pocket);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+  transition: background 0.4s ease;
+}
+
+.envelope-wrapper.theme-aniversario .envelope-pocket::before {
+  background: var(--envelope-aniversario-pocket);
+}
+.envelope-wrapper.theme-amor .envelope-pocket::before {
+  background: var(--envelope-amor-pocket);
+}
+.envelope-wrapper.theme-desculpa .envelope-pocket::before {
+  background: var(--envelope-desculpa-pocket);
+}
+.envelope-wrapper.theme-gratidao .envelope-pocket::before {
+  background: var(--envelope-gratidao-pocket);
+}
+
+/* ==========================================================================
+   ABA SUPERIOR DOBRÁVEL 3D (FLAP)
+   ========================================================================== */
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56%;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border-radius: 16px 16px 0 0;
+  background: var(--envelope-aniversario-flap);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s 0.3s;
+  z-index: 6;
+  backface-visibility: visible;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.12));
+}
+
+.envelope-wrapper.theme-aniversario .envelope-flap {
+  background: var(--envelope-aniversario-flap);
+}
+.envelope-wrapper.theme-amor .envelope-flap {
+  background: var(--envelope-amor-flap);
+}
+.envelope-wrapper.theme-desculpa .envelope-flap {
+  background: var(--envelope-desculpa-flap);
+}
+.envelope-wrapper.theme-gratidao .envelope-flap {
+  background: var(--envelope-gratidao-flap);
+}
+
+/* ==========================================================================
+   SELO DE CERA CLICÁVEL & ACESSÍVEL (WAX SEAL)
+   ========================================================================== */
+.wax-seal {
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: var(--seal-aniversario-bg);
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28), 0 0 16px var(--seal-aniversario-glow);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              opacity 0.35s ease, 
+              box-shadow 0.3s ease;
+  animation: sealPulse 2.4s infinite ease-in-out;
+  touch-action: manipulation;
+}
+
+.wax-seal:focus-visible {
+  outline: 3px solid #fbbf24;
+  outline-offset: 4px;
+}
+
+.seal-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.seal-label {
+  position: absolute;
+  bottom: -20px;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@keyframes sealPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28), 0 0 14px var(--seal-aniversario-glow);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.06);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.32), 0 0 24px var(--seal-aniversario-glow);
+  }
+}
+
+/* ==========================================================================
+   A CARTA DE PAPEL (ENVELOPE LETTER) - SEM CORTE DE TEXTO
+   ========================================================================== */
+.envelope-letter {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  height: 190px;
+  background: #fffefb;
+  border-radius: 12px;
+  border: 1px solid #fed7aa;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  padding: 16px 16px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  z-index: 2;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s ease,
+              height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.6s ease;
+}
+
+/* Textura suave de papel de carta */
+.envelope-letter::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(245, 158, 11, 0.05) 1px, transparent 0);
+  background-size: 16px 16px;
+  pointer-events: none;
+  border-radius: 12px;
+}
+
+.letter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed #fed7aa;
+  padding-bottom: 6px;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.letter-stamp {
+  width: 32px;
+  height: 36px;
+  background: #fff7ed;
+  border: 1.5px dashed #f97316;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.letter-stamp-postmark {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #c2410c;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.letter-date {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.letter-body {
+  margin: 10px 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.letter-greeting {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #9a3412;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.letter-text-container {
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #f97316 transparent;
+}
+
+.letter-text-container::-webkit-scrollbar {
+  width: 5px;
+}
+.letter-text-container::-webkit-scrollbar-thumb {
+  background-color: #fed7aa;
+  border-radius: 4px;
+}
+
+.letter-text {
+  font-family: var(--font-handwriting);
+  font-size: 1.35rem;
+  line-height: 1.4;
+  color: #1c1917;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.letter-sign {
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 6px;
+  border-top: 1px dashed #fed7aa;
+  padding-top: 6px;
+  font-size: 0.85rem;
+  color: #9a3412;
+  flex-shrink: 0;
+}
+
+.letter-sign-name {
+  font-weight: 800;
+  color: var(--primary);
+}
+
+/* ==========================================================================
+   ESTADO ABERTO (CINEMATOGRÁFICO EM ETAPAS)
+   ========================================================================== */
+
+/* Etapa 1: Selo de cera quebra */
+.envelope-wrapper.is-open .wax-seal {
+  transform: translate(-50%, -50%) scale(0) rotate(35deg);
+  opacity: 0;
+  pointer-events: none;
+  animation: none;
+}
+
+/* Etapa 2: A aba gira 180° no eixo X e vai para trás */
+.envelope-wrapper.is-open .envelope-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.1s 0.28s;
+}
+
+/* Etapa 3 & 4: A carta sai de dentro do bolso, expande e fica legível */
+.envelope-wrapper.is-open .envelope-letter {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 25;
+  /* Subida proporcional com expansão total */
+  transform: translateY(-90px);
+  height: auto;
+  min-height: 290px;
+  max-height: min(65vh, 460px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.22), 0 0 0 1px rgba(245, 158, 11, 0.25);
+  overflow-y: hidden; /* O container interno .letter-text-container faz o scroll se necessário */
+}
+
+/* Em telas maiores, podemos dar mais escala e destaque */
+@media (min-width: 640px) {
+  .envelope-wrapper.is-open .envelope-letter {
+    transform: translateY(-110px);
+    min-height: 310px;
+    max-height: min(70vh, 520px);
+    left: -15px;
+    right: -15px;
+  }
+}
+
+/* ==========================================================================
+   ÁREA INTERATIVA DO DESTINATÁRIO & TRANSIÇÕES SUAVES
+   ========================================================================== */
+.recipient-interactive-box {
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  padding: 16px 18px;
+  margin-top: 24px;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.45s ease 0.4s, transform 0.45s ease 0.4s;
+  display: block; /* Fica no fluxo mas invisível até abrir */
+  visibility: hidden;
+}
+
+.envelope-wrapper.is-open ~ .recipient-interactive-box,
+.recipient-interactive-box.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.interactive-box-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.recipient-btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.recipient-reaction-btn {
+  padding: 9px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-subtle);
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.recipient-reaction-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.reaction-feedback-toast {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+/* ==========================================================================
+   BARRA DE AÇÕES (FECHAR ENVELOPE / ENVIAR CARTA)
+   ========================================================================== */
+.envelope-actions-bar {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .envelope-actions-bar {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+
+/* ==========================================================================
+   TERMOS DE USO & CHECKBOX DE ACEITE
+   ========================================================================== */
+.terms-acceptance-group {
+  margin-top: 18px;
+  margin-bottom: 18px;
+  text-align: left;
+  background: #f8fafc;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+
+.terms-acceptance-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.terms-acceptance-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.terms-acceptance-label a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.message-moderation-alert {
+  margin-top: 8px;
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  line-height: 1.45;
+  display: none;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Modal de Termos de Uso */
+.terms-modal-box {
+  text-align: left;
+  max-width: 560px;
+}
+
+.terms-modal-box h3 {
+  font-size: 1.4rem;
+  color: #0f172a;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 10px;
+}
+
+.terms-content-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 6px;
+  font-size: 0.9rem;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.terms-content-scroll h4 {
+  font-size: 1rem;
+  color: #0f172a;
+  margin-top: 14px;
+  margin-bottom: 6px;
+}
+
+.terms-content-scroll ul {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+
+.terms-content-scroll li {
+  margin-bottom: 4px;
+}
+
+/* ==========================================================================
+   ACESSIBILIDADE: PREFERS-REDUCED-MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .envelope-wrapper,
+  .envelope-flap,
+  .wax-seal,
+  .envelope-letter,
+  .recipient-interactive-box {
+    transition: none !important;
+    animation: none !important;
+  }
+}

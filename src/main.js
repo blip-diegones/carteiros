@@ -181,14 +181,13 @@ function initApp() {
     </section>
 
     <!-- SEÇÃO ENVELOPE INTERATIVO 3D (A CARTA MÁGICA) -->
-    <!-- SEÇÃO ENVELOPE INTERATIVO 3D (A CARTA MÁGICA) -->
     <section class="envelope-showcase-section" id="simulador-envelope">
       <div class="container">
         <div class="section-header">
           <span class="badge-pill">🎉 Experiência Real Demonstrável</span>
           <h2>A Carta Mágica Envelopada</h2>
           <p>
-            O aniversariante recebe o link exclusivo no WhatsApp e vive uma experiência cinematográfica ao abrir o envelope 3D!
+            O destinatário recebe o link exclusivo no WhatsApp e vive uma experiência cinematográfica ao abrir o envelope 3D!
           </p>
         </div>
 
@@ -201,48 +200,67 @@ function initApp() {
               <button type="button" class="scenario-pill" data-scenario="amor">💖 Declaração Secreta</button>
               <button type="button" class="scenario-pill" data-scenario="desculpa">🥺 Pedido de Desculpas</button>
               <button type="button" class="scenario-pill" data-scenario="gratidao">🌟 Amizade & Gratidão</button>
+              <button type="button" class="scenario-pill scenario-pill-custom" id="btn-custom-scenario" title="Testar com seu próprio texto">✍️ Meu Próprio Texto</button>
             </div>
           </div>
 
-          <div class="envelope-instruction-badge">
-            👇 Toque no selo de cera dourado para quebrar o lacre e ver a carta abrir!
+          <!-- CAMPO RÁPIDO PARA O PRÓPRIO TEXTO NA DEMO -->
+          <div class="custom-demo-text-box" id="custom-demo-text-box" style="display: none;">
+            <label for="demo-custom-textarea" class="custom-demo-label">Escreva sua mensagem personalizada para ver na Carta Mágica (até 800 caracteres):</label>
+            <textarea id="demo-custom-textarea" class="textarea-custom textarea-demo" maxlength="800" placeholder="Escreva aqui sua declaração, felicitação ou desculpas para testar o envelope ao vivo..."></textarea>
+            <div class="custom-demo-footer">
+              <span id="demo-char-counter">0 / 800 caracteres</span>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-apply-demo-text">Aplicar na Carta ✨</button>
+            </div>
           </div>
 
-          <div class="envelope-stage">
-            <div class="envelope-wrapper" id="envelope-element">
+          <div class="envelope-instruction-badge" id="envelope-instruction-badge">
+            <span class="badge-icon">👇</span>
+            <span class="badge-text" id="envelope-instruction-text">Toque no selo de cera dourado para quebrar o lacre e ver a carta abrir!</span>
+          </div>
+
+          <div class="envelope-stage" id="envelope-stage">
+            <div class="envelope-wrapper theme-aniversario" id="envelope-element">
               <div class="envelope-back"></div>
               
-              <!-- A Carta de Papel -->
-              <div class="envelope-letter">
-                <div class="letter-header">
+              <!-- A Carta de Papel (Expansível, sem corte e com scroll interno suave) -->
+              <article class="envelope-letter" id="envelope-letter" aria-label="Carta do Carteiro Secreto">
+                <header class="letter-header">
                   <div class="letter-stamp" id="interactive-letter-stamp">🎂</div>
+                  <div class="letter-stamp-postmark">CORREIO SECRETO • ENTREGA COM AMOR</div>
                   <span class="letter-date" id="interactive-letter-date">Hoje</span>
-                </div>
+                </header>
                 <div class="letter-body">
                   <p class="letter-greeting">Para: <span id="interactive-letter-to">Mariana</span></p>
-                  <p class="letter-text" id="interactive-letter-text">
-                    "Feliz aniversário! 🎂 Que o seu novo ano venha repleto de sorrisos, paz e sonhos realizados. Obrigado por iluminar a vida de quem está ao seu redor! ✨❤️"
-                  </p>
+                  <div class="letter-text-container">
+                    <p class="letter-text" id="interactive-letter-text">
+                      "Feliz aniversário! 🎂 Que o seu novo ano venha repleto de sorrisos, paz e sonhos realizados. Obrigado por iluminar a vida de quem está ao seu redor! ✨❤️"
+                    </p>
+                  </div>
                 </div>
-                <div class="letter-sign">
-                  Com carinho, <span id="interactive-letter-from">Um amigo secreto 💌</span>
-                </div>
-              </div>
+                <footer class="letter-sign">
+                  <span class="letter-sign-prefix">Com carinho,</span>
+                  <span class="letter-sign-name" id="interactive-letter-from">Um amigo secreto 💌</span>
+                </footer>
+              </article>
 
-              <!-- Bolso frontal e abas -->
+              <!-- Bolso frontal -->
               <div class="envelope-pocket"></div>
-              <div class="envelope-flap"></div>
+              
+              <!-- Aba superior dobrável 3D -->
+              <div class="envelope-flap" id="envelope-flap"></div>
 
-              <!-- Selo de Cera Clicável -->
-              <div class="wax-seal" id="wax-seal-btn" title="Toque para abrir!">
-                <span>⚜️</span>
-              </div>
+              <!-- Selo de Cera Clicável e Acessível (<button>) -->
+              <button type="button" class="wax-seal" id="wax-seal-btn" title="Toque para abrir a Carta Mágica!" aria-label="Toque para quebrar o selo de cera e abrir a carta mágica">
+                <span class="seal-icon" id="seal-icon-display">🎂</span>
+                <span class="seal-label">TOQUE</span>
+              </button>
             </div>
           </div>
 
           <!-- ÁREA INTERATIVA DO DESTINATÁRIO -->
           <div class="recipient-interactive-box" id="recipient-interactive-box">
-            <div class="interactive-box-title">🎁 O que o aniversariante pode fazer ao abrir o link:</div>
+            <div class="interactive-box-title">🎁 O que o destinatário pode fazer ao abrir o link:</div>
             <div class="recipient-btn-group">
               <button type="button" class="recipient-reaction-btn" id="btn-react-love">
                 ❤️ Reagir com Amor
@@ -257,7 +275,7 @@ function initApp() {
           </div>
 
           <div class="envelope-actions-bar">
-            <button class="btn btn-secondary btn-sm" id="reset-envelope-btn">
+            <button type="button" class="btn btn-secondary btn-sm" id="reset-envelope-btn">
               🔄 Fechar Envelope
             </button>
             <a href="#criar-recado" class="btn btn-primary btn-sm" id="btn-select-magica">
@@ -486,6 +504,8 @@ function initApp() {
                   <span id="char-count-current">${state.messageText.length} caracteres</span>
                   <span id="char-count-max">Máx: ${PLAN_PRICES[state.selectedPlan].maxChars} caracteres</span>
                 </div>
+                <!-- AVISO DE MODERAÇÃO AMIGÁVEL -->
+                <div id="message-moderation-warning" class="message-moderation-alert"></div>
               </div>
 
               <!-- PASSO 4: IDENTIDADE (ANÔNIMO OU ASSINADO) -->
@@ -526,6 +546,14 @@ function initApp() {
                   </label>
                   <span class="addon-price-tag">+R$ 4,90</span>
                 </div>
+              </div>
+
+              <!-- ACEITE DOS TERMOS DE USO OBRIGATÓRIO (REQUISITO DA PLATAFORMA) -->
+              <div class="terms-acceptance-group">
+                <label class="terms-acceptance-label" for="check-accept-terms">
+                  <input type="checkbox" id="check-accept-terms" required>
+                  <span>Li e aceito os <a href="#termos" id="link-open-terms">Termos de Uso</a>. Declaro que o recado não contém ofensas, ódio, assédio, conteúdo sexual, bullying ou exposição de dados pessoais.</span>
+                </label>
               </div>
 
               <!-- BOTÃO DE SUBMIT -->
